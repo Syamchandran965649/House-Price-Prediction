@@ -1,0 +1,90 @@
+schema: '2.0'
+stages:
+  data_preprocessing:
+    cmd: python src\data_preprocessing.py
+    deps:
+    - path: data\raw\zameen-updated.csv
+      hash: md5
+      md5: 862ce971c086da8903e8ecc7c8a52c92
+      size: 49522076
+    - path: src\data_preprocessing.py
+      hash: md5
+      md5: e8bf9701e9fc75d608718ecf8891e665
+      size: 2191
+    outs:
+    - path: data\processed\processed_data.csv
+      hash: md5
+      md5: d9aa7394a72c5225bf7ea1c47762de66
+      size: 6491981
+  feature_engineering:
+    cmd: python src\feature_engineering.py
+    deps:
+    - path: data\processed\processed_data.csv
+      hash: md5
+      md5: d9aa7394a72c5225bf7ea1c47762de66
+      size: 6491981
+    - path: src\feature_engineering.py
+      hash: md5
+      md5: e781055b1de29c08b342a65b27bba020
+      size: 1818
+    outs:
+    - path: data\features\X_test.csv
+      hash: md5
+      md5: 954c747123628dc7b80aba3de531fe20
+      size: 5439858
+    - path: data\features\X_train.csv
+      hash: md5
+      md5: 67d8bce80fa5ddc5fcb7d398b45f9eb3
+      size: 21760975
+    - path: data\features\y_test.csv
+      hash: md5
+      md5: c1ec9ada774fa2404a7d955b8b196355
+      size: 206305
+    - path: data\features\y_train.csv
+      hash: md5
+      md5: ec9421e2efd809d917fb760926ecaf11
+      size: 824389
+  train:
+    cmd: python src\train.py
+    deps:
+    - path: data\features\X_test.csv
+      hash: md5
+      md5: 954c747123628dc7b80aba3de531fe20
+      size: 5439858
+    - path: data\features\X_train.csv
+      hash: md5
+      md5: 67d8bce80fa5ddc5fcb7d398b45f9eb3
+      size: 21760975
+    - path: data\features\y_test.csv
+      hash: md5
+      md5: c1ec9ada774fa2404a7d955b8b196355
+      size: 206305
+    - path: data\features\y_train.csv
+      hash: md5
+      md5: ec9421e2efd809d917fb760926ecaf11
+      size: 824389
+    - path: src\train.py
+      hash: md5
+      md5: 4d1beb4ac3a33afab31ba4c048d26037
+      size: 3745
+    outs:
+    - path: models\best_model.pkl
+      hash: md5
+      md5: 116cd4462d6781997e1a12034548b518
+      size: 571863057
+  evaluate:
+    cmd: python src\evaluate.py
+    deps:
+    - path: models\best_model.pkl
+      hash: md5
+      md5: 116cd4462d6781997e1a12034548b518
+      size: 571863057
+    - path: src\evaluate.py
+      hash: md5
+      md5: 548c98f6879480f97444f928eedea54f
+      size: 1537
+    outs:
+    - path: reports\metrics.json
+      hash: md5
+      md5: 578a1d6b540a642dc577f5f93447697c
+      size: 104

@@ -1,0 +1,35 @@
+stages:
+  data_preprocessing:
+    cmd: python src\data_preprocessing.py
+    deps:
+    - data\raw\zameen-updated.csv
+    - src\data_preprocessing.py
+    outs:
+    - data\processed\processed_data.csv
+  feature_engineering:
+    cmd: python src\feature_engineering.py
+    deps:
+    - data\processed\processed_data.csv
+    - src\feature_engineering.py
+    outs:
+    - data\features\X_test.csv
+    - data\features\X_train.csv
+    - data\features\y_test.csv
+    - data\features\y_train.csv
+  train:
+    cmd: python src\train.py
+    deps:
+    - data\features\X_test.csv
+    - data\features\X_train.csv
+    - data\features\y_test.csv
+    - data\features\y_train.csv
+    - src\train.py
+    outs:
+    - models\best_model.pkl
+  evaluate:
+    cmd: python src\evaluate.py
+    deps:
+    - models\best_model.pkl
+    - src\evaluate.py
+    outs:
+    - reports\metrics.json

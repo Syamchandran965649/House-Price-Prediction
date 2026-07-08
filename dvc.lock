@@ -25,36 +25,24 @@ stages:
       size: 6491981
     - path: src\feature_engineering.py
       hash: md5
-      md5: e781055b1de29c08b342a65b27bba020
-      size: 1818
+      md5: becc3aa97e0696c20d48f3d640f998dc
+      size: 3444
     outs:
-    - path: data\features\X_test.csv
+    - path: feature_repo\data\features.parquet
       hash: md5
-      md5: 954c747123628dc7b80aba3de531fe20
-      size: 5439858
-    - path: data\features\X_train.csv
-      hash: md5
-      md5: 67d8bce80fa5ddc5fcb7d398b45f9eb3
-      size: 21760975
-    - path: data\features\y_test.csv
-      hash: md5
-      md5: c1ec9ada774fa2404a7d955b8b196355
-      size: 206305
-    - path: data\features\y_train.csv
-      hash: md5
-      md5: ec9421e2efd809d917fb760926ecaf11
-      size: 824389
+      md5: b150435dec6ef81f5d3b432f6871372c
+      size: 1216684
   train:
     cmd: python src\train.py
     deps:
     - path: data\features\X_test.csv
       hash: md5
-      md5: 954c747123628dc7b80aba3de531fe20
-      size: 5439858
+      md5: 7552331a40df8d8f6c6a955975c4d7f6
+      size: 5437690
     - path: data\features\X_train.csv
       hash: md5
-      md5: 67d8bce80fa5ddc5fcb7d398b45f9eb3
-      size: 21760975
+      md5: 09b697f02605219f0d55846047646564
+      size: 21754064
     - path: data\features\y_test.csv
       hash: md5
       md5: c1ec9ada774fa2404a7d955b8b196355
@@ -70,15 +58,15 @@ stages:
     outs:
     - path: models\best_model.pkl
       hash: md5
-      md5: 116cd4462d6781997e1a12034548b518
-      size: 571863057
+      md5: 49750ca2e7df4eb52006139a4e41e9f7
+      size: 571780897
   evaluate:
     cmd: python src\evaluate.py
     deps:
     - path: models\best_model.pkl
       hash: md5
-      md5: 116cd4462d6781997e1a12034548b518
-      size: 571863057
+      md5: 49750ca2e7df4eb52006139a4e41e9f7
+      size: 571780897
     - path: src\evaluate.py
       hash: md5
       md5: 548c98f6879480f97444f928eedea54f
@@ -86,5 +74,48 @@ stages:
     outs:
     - path: reports\metrics.json
       hash: md5
-      md5: 578a1d6b540a642dc577f5f93447697c
+      md5: 0194a4b20f6d12972918b6344b726914
       size: 104
+  feast_apply:
+    cmd: feast -c feature_repo\feature_repo apply
+    deps:
+    - path: feature_repo\data\features.parquet
+      hash: md5
+      md5: b150435dec6ef81f5d3b432f6871372c
+      size: 1216684
+    - path: feature_repo\feature_repo\feature_definitions.py
+      hash: md5
+      md5: c487b5a39c5e5e8754bb5eb709345a2d
+      size: 473
+    - path: feature_repo\feature_repo\feature_store.yaml
+      hash: md5
+      md5: 5d5c8f0210b90aeceda604a9fe99c966
+      size: 549
+  get_features:
+    cmd: python src\get_features.py
+    deps:
+    - path: feature_repo\data\features.parquet
+      hash: md5
+      md5: b150435dec6ef81f5d3b432f6871372c
+      size: 1216684
+    - path: src\get_features.py
+      hash: md5
+      md5: e8dcf33a1648874057102d1e554c0534
+      size: 744
+    outs:
+    - path: data\features\X_test.csv
+      hash: md5
+      md5: 7552331a40df8d8f6c6a955975c4d7f6
+      size: 5437690
+    - path: data\features\X_train.csv
+      hash: md5
+      md5: 09b697f02605219f0d55846047646564
+      size: 21754064
+    - path: data\features\y_test.csv
+      hash: md5
+      md5: c1ec9ada774fa2404a7d955b8b196355
+      size: 206305
+    - path: data\features\y_train.csv
+      hash: md5
+      md5: ec9421e2efd809d917fb760926ecaf11
+      size: 824389

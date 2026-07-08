@@ -17,5 +17,3 @@ Input:
 
 Output:
 - Predicted Property Price
-
-

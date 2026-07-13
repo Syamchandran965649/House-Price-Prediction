@@ -1,48 +1,66 @@
 import joblib
 import pandas as pd
+from feast_service import get_features
 
 
 class HousePricePredictor:
 
     def __init__(self):
-        # Path of the trained model
         self.model_path = "models/best_model.pkl"
 
-    def predict(self):
+    def predict(self, property_id):
 
-        # Load the trained model
+        # Load trained model
         model = joblib.load(self.model_path)
 
-        # Sample input data
-        # Replace these values with the details of the house
-        input_data = pd.DataFrame({
+        # Fetch features from Feast
+        feature_data = get_features(property_id)
 
-            "property_type": [1],
-            "location": [100],
-            "city": [2],
-            "province_name": [1],
-            "latitude": [33.6844],
-            "longitude": [73.0479],
-            "baths": [3],
-            "purpose": [1],
-            "bedrooms": [4],
-            "Area Type": [1],
-            "Area Size": [10.0],
-            "Area Category": [13]
+        # Convert to DataFrame
+        input_data = pd.DataFrame(feature_data)
 
-        })
+        # Remove entity column
+        input_data.drop(columns=["property_id"], inplace=True)
 
-        # Predict the house price
+        # Rename columns to match the model
+        input_data.rename(
+            columns={
+                "area_type": "Area Type",
+                "area_size": "Area Size",
+                "area_category": "Area Category",
+            },
+            inplace=True,
+        )
+
+        # Arrange columns in the same order used during training
+        input_data = input_data[
+            [
+                "property_type",
+                "location",
+                "city",
+                "province_name",
+                "latitude",
+                "longitude",
+                "baths",
+                "purpose",
+                "bedrooms",
+                "Area Type",
+                "Area Size",
+                "Area Category",
+            ]
+        ]
+
+        # Predict
         predicted_price = model.predict(input_data)
 
         print("=" * 60)
         print("House Price Prediction")
         print("=" * 60)
+        print(f"Property ID     : {property_id}")
         print(f"Predicted Price : {predicted_price[0]:,.2f}")
         print("=" * 60)
 
 
 if __name__ == "__main__":
-
     predictor = HousePricePredictor()
-    predictor.predict()
+    predictor.predict(1)

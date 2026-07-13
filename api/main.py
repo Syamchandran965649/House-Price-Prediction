@@ -2,7 +2,7 @@ import joblib
 import pandas as pd
 from fastapi import FastAPI
 
-from api.schemas import HouseData
+from src.feast_service import get_features
 
 app = FastAPI(
     title="House Price Prediction API",
@@ -17,26 +17,48 @@ def home():
     return {"message": "House Price Prediction API is Running"}
 
 
-@app.post("/predict")
-def predict(data: HouseData):
+@app.get("/predict/{property_id}")
+def predict(property_id: int):
 
-    input_df = pd.DataFrame([{
-        "property_type": data.property_type,
-        "location": data.location,
-        "city": data.city,
-        "province_name": data.province_name,
-        "latitude": data.latitude,
-        "longitude": data.longitude,
-        "baths": data.baths,
-        "purpose": data.purpose,
-        "bedrooms": data.bedrooms,
-        "Area Type": data.Area_Type,
-        "Area Size": data.Area_Size,
-        "Area Category": data.Area_Category
-    }])
+    # Get features from Feast
+    feature_data = get_features(property_id)
+
+    input_df = pd.DataFrame(feature_data)
+
+    # Remove entity column
+    input_df.drop(columns=["property_id"], inplace=True)
+
+    # Rename columns to match the trained model
+    input_df.rename(
+        columns={
+            "area_type": "Area Type",
+            "area_size": "Area Size",
+            "area_category": "Area Category",
+        },
+        inplace=True,
+    )
+
+    # Arrange columns in training order
+    input_df = input_df[
+        [
+            "property_type",
+            "location",
+            "city",
+            "province_name",
+            "latitude",
+            "longitude",
+            "baths",
+            "purpose",
+            "bedrooms",
+            "Area Type",
+            "Area Size",
+            "Area Category",
+        ]
+    ]
 
     prediction = model.predict(input_df)
 
     return {
-        "Predicted Price": float(prediction[0])
+        "property_id": property_id,
+        "predicted_price": float(prediction[0])
     }

@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class HouseData(BaseModel):
+    property_id:int
     property_type: int
     location: int
     city: int

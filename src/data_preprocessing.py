@@ -18,7 +18,7 @@ class DataPreprocessing:
 
         # Drop unnecessary columns
         columns_to_drop = [
-            "property_id",
+            
             "location_id",
             "page_url",
             "date_added",
@@ -58,6 +58,8 @@ class DataPreprocessing:
         os.makedirs("data/processed", exist_ok=True)
 
         # Save processed data
+        from datetime import datetime
+        df["event_timestand"]=datetime.now()
         df.to_csv(self.output_path, index=False)
 
         print("=" * 60)

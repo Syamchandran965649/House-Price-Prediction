@@ -1,4 +1,45 @@
+
+
+
+
+# Virtual environment (huge, machine-specific, never commit)
 venv/
-mlruns/
+
+# Python cache files
 __pycache__/
 *.pyc
+.pytest_cache/
+
+# Large data files (should be tracked via DVC instead)
+data/processed/processed_data.csv
+data/processed/processed_data.parquet
+data/raw/zameen-updated.csv
+
+# Model artifacts (large binary files — use DVC or model registry instead)
+models/best_model.pkl
+models/model.pkl
+
+# MLflow tracking data (can get very large over time)
+mlruns/
+
+# Feast feature store generated/binary files
+feature_store/feature_repo/feature_repo/data/*.parquet
+feature_store/feature_repo/feature_repo/data/*.db
+feature_store/feature_repo/data/registry.db
+
+# Monitoring logs (grows continuously, not source code)
+monitoring/prediction_logs.csv
+monitoring/logs/
+monitoring/drift_report.html
+monitoring/drift_report.txt
+monitoring/drift_summary.txt
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# VS Code workspace settings (optional — some teams keep this)
+.vscode/
+
+# OS-specific junk
+.DS_Store
+Thumbs.db

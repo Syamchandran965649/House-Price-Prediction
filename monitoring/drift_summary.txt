@@ -1,0 +1,19 @@
+DRIFT DETECTION REPORT
+==================================================
+Status : DRIFT DETECTED
+Drifted Features : 12/12
+Drift Percentage : 100.00%
+
+Per-column drift scores:
+  property_type        (Wasserstein distance (normed) ) : 0.7624
+  location             (Wasserstein distance (normed) ) : 0.7159
+  city                 (Jensen-Shannon distance       ) : 0.6352
+  province_name        (Jensen-Shannon distance       ) : 0.6352
+  latitude             (Wasserstein distance (normed) ) : 0.9978
+  longitude            (Wasserstein distance (normed) ) : 0.7674
+  baths                (Wasserstein distance (normed) ) : 0.5751
+  purpose              (Jensen-Shannon distance       ) : 0.3318
+  bedrooms             (Wasserstein distance (normed) ) : 0.5941
+  Area Type            (Jensen-Shannon distance       ) : 0.2602
+  Area Size            (Wasserstein distance (normed) ) : 0.3431
+  Area Category        (Wasserstein distance (normed) ) : 0.4993

@@ -2,6 +2,8 @@ import joblib
 import pandas as pd
 from fastapi import FastAPI
 from feast import FeatureStore
+from monitoring.logger import log_prediction
+from monitoring.monitor import monitor_predictions
 
 from api.schemas import HouseData
 
@@ -82,6 +84,16 @@ def predict(data: HouseData):
     ]
 
     prediction = model.predict(feature_vector)
+
+    log_prediction(
+        property_id=data.property_id,
+        features=feature_vector.iloc[0].to_dict(),
+        prediction=float(prediction[0])
+    )
+    try:
+        monitor_predictions()
+    except Exception as e:
+        print(f"Monitoring error:{e}")    
 
     return {
         "Predicted Price": float(prediction[0])

@@ -1,4 +1,6 @@
-
+*.pkl
+*.db
+feature_store/**/online_store.db
 
 
 
